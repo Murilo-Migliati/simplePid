@@ -1,123 +1,95 @@
 class PID(
-    private var _Kp: Double = 1.0,
-    private var _Ki: Double = 0.0,
-    private var _Kd: Double = 0.0,
-    var setPoint: Double = 0.0,
+    var Kp: Double = 1.0,
+    var Ki: Double = 0.0,
+    var Kd: Double = 0.0,
+    var setpoint: Double = 0.0,
     var sampleTime: Double = 0.01,
-    var outputLimits: Pair<Double?, Double?> = Pair(null, null),
-    private var _autoMode: Boolean = true,
-    var proportionalOnMeasurement: Boolean = false,
-    var differentialOnMeasurement: Boolean = true,
-    var errorMap: ((Double) -> Double)? = null,
-    var timeFn: (() -> Double)? = null,
-    var startingOutput: Double = 0.0
+    output_limits: Pair<Double?, Double?> = Pair(null, null),
+    var auto_mode: Boolean = true,
+    var proportional_on_measurement: Boolean = false,
+    var differential_on_measurement: Boolean = true,
+    var error_map: ((Double) -> Double)? = null,
+    private val time_fn: () -> Double = { System.nanoTime() / 1e9 }
 ) {
-    private var _lastOutput: Double? = null
-    private var _lastInput: Double? = null
-    private var _lastError: Double? = null
-    private var _lastTime: Double = 0.0
-    private var _proportional: Double = 0.0
-    private var _integral: Double = 0.0
-    private var _derivative: Double = 0.0
+    private var _proportional = 0.0
+    private var _integral = 0.0
+    private var _derivative = 0.0
 
-    var Kp: Double = _Kp
-        get() = field
+    private var _last_time: Double? = null
+    private var _last_output: Double? = null
+    private var _last_error: Double? = null
+    private var _last_input: Double? = null
+
+    var output_limits: Pair<Double?, Double?> = output_limits
         set(value) {
-            if (value < 0) throw IllegalArgumentException("Kp cannot be negative")
             field = value
-        }
-    var Ki: Double = _Ki
-        get() = field
-        set(value) {
-            if (value < 0) throw IllegalArgumentException("Ki cannot be negative")
-            field = value
-        }
-    var Kd: Double = _Kd
-        get() = field
-        set(value) {
-            if (value < 0) throw IllegalArgumentException("Kd cannot be negative")
-            field = value
+            _integral = clamp(_integral, value)
         }
 
-    private fun _clamp(value: Double, limits: Pair<Double?, Double?>): Double {
-        val (lower, upper) = limits
-        return when {
-            lower != null && value < lower -> lower
-            upper != null && value > upper -> upper
-            else -> value
-        }
+    init {
+        reset()
     }
 
-    fun call(input_: Double, dt: Double? = null): Double? {
-        if (!autoMode) return _lastOutput
+    fun call(input: Double, dt: Double? = null): Double? {
+        if (!auto_mode) return _last_output
 
-        val now = timeFn?.invoke() ?: 0.0
-        val actualDt = dt ?: if (now - _lastTime > 0) now - _lastTime else 1e-16
-        if (sampleTime != null && actualDt < sampleTime) {
-            return _lastOutput
+        val now = time_fn()
+        val actualDt = dt ?: (_last_time?.let { now - it } ?: 1e-16)
+
+        if (actualDt <= 0) return _last_output
+
+        if (sampleTime != null && actualDt < sampleTime && _last_output != null) {
+            return _last_output
         }
 
-        val error = setPoint - input_
-        val dInput = input_ - (_lastInput ?: input_)
-        val dError = error - (_lastError ?: error)
+        val error = setpoint - input
+        val mappedError = error_map?.invoke(error) ?: error
 
-        val mappedError = errorMap?.invoke(error) ?: error
+        val dInput = if (_last_input != null) input - _last_input!! else 0.0
+        val dError = if (_last_error != null) mappedError - _last_error!! else 0.0
 
-        if (!proportionalOnMeasurement) {
-            _proportional -= Kp * mappedError
+        _proportional = if (proportional_on_measurement) {
+            _proportional - Kp * dInput
         } else {
-            _proportional -= Kp * dInput
+            Kp * mappedError
         }
 
         _integral += Ki * mappedError * actualDt
-        _integral = _clamp(_integral, outputLimits)
+        _integral = clamp(_integral, output_limits)
 
-        _derivative = if (differentialOnMeasurement) {
-            -Kd * dInput / actualDt
+        _derivative = if (differential_on_measurement) {
+            if (actualDt > 0) -Kd * dInput / actualDt else 0.0
         } else {
-            Kd * dError / actualDt
+            if (actualDt > 0) Kd * dError / actualDt else 0.0
         }
 
-        var output = _proportional + _integral + _derivative
-        output = _clamp(output, outputLimits)
+        val output = _proportional + _integral + _derivative
+        val clampedOutput = clamp(output, output_limits)
 
-        _lastOutput = output
-        _lastInput = input_
-        _lastError = mappedError
-        _lastTime = now
+        _last_output = clampedOutput
+        _last_input = input
+        _last_error = mappedError
+        _last_time = now
 
-        return output
+        return clampedOutput
     }
 
     fun reset() {
+        _last_time = null
+        _last_output = null
+        _last_error = null
+        _last_input = null
         _proportional = 0.0
         _integral = 0.0
         _derivative = 0.0
-        _lastTime = timeFn?.invoke() ?: System.currentTimeMillis().toDouble()
-        _lastOutput = null
-        _lastInput = null
-        _lastError = null
     }
 
-    var autoMode: Boolean
-        get() = _autoMode
-        set(enabled) {
-            setAutoModeImpl(enabled)
+    private fun clamp(value: Double, limits: Pair<Double?, Double?>): Double {
+        val (lower, upper) = limits
+        return when {
+            upper != null && value > upper -> upper
+            lower != null && value < lower -> lower
+            else -> value
         }
-
-    private fun setAutoModeImpl(enabled: Boolean) {
-        if (enabled && !autoMode) {
-            reset()
-            _integral = _clamp(startingOutput, outputLimits) ?: 0.0
-        }
-        _autoMode = enabled
     }
-
-    init {
-        println("PID Controller initialized: Kp=$Kp, Ki=$Ki , Kd=$Kd")
-    }
-}
-
-fun main() {
-    println("Hello World")
 }
