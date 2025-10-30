@@ -15,7 +15,7 @@ class PID(
     private var _integral = 0.0
     private var _derivative = 0.0
 
-    private var _last_time: Double? = null
+    internal var _last_time: Double? = null
     private var _last_output: Double? = null
     private var _last_error: Double? = null
     private var _last_input: Double? = null
