@@ -358,5 +358,5 @@ class PidTest {
         assertNotNull(output)
         assertEquals(2.0, output, 0.001)
     }
-    
+
 }
