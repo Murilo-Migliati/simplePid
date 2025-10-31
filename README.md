@@ -24,14 +24,14 @@ Available on Maven Central:
 
 ```kotlin
 dependencies {
-    implementation("com.yourusername:kotlin-pid-controller:1.0.0")
+    implementation("io.github.murilo-milgiati:kmm-pid-controller:1.1.0")
 }
 ```
 
 Gradle (Kotlin DSL):
 
 ```kotlin
-implementation("com.yourusername:kotlin-pid-controller:1.0.0")
+implementation("io.github.murilo-milgiati:kmm-pid-controller:1.1.0")
 ```
 
 ---
@@ -39,18 +39,22 @@ implementation("com.yourusername:kotlin-pid-controller:1.0.0")
 ## 🧮 Example Usage
 
 ```kotlin
-import com.yourusername.pid.PIDController
+import com.murilo-migliati.PIDController
 
 fun main() {
-    val pid = PIDController(kp = 1.2, ki = 0.8, kd = 0.4)
+    val pid = PIDController(
+                        kp = 1.2,
+                        ki = 0.8,
+                        kd = 0.4,
+                        setpoint = 100
+)
 
-    var setpoint = 100.0
-    var processValue = 80.0
+    var humidity = 80.0
+    var pid.call(humidity)
 
     repeat(5) {
-        val output = pid.compute(setpoint, processValue)
+        val output = pid.call(humidity)
         println("PID output: $output")
-        processValue += output * 0.1 // Simulate system response
     }
 }
 ```
