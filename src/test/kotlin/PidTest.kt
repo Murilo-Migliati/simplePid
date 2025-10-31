@@ -19,10 +19,10 @@ class PidTest {
 
         val clock  = MockClock(0.0)
 
-        val pid = PID(
-            Kp = 2.0,
+        val pid = PIDController(
+            kp = 2.0,
             setpoint = 100.0,
-            time_fn = clock::timeProvider
+            timeFn = clock::timeProvider
         )
 
         var output = pid.call(input = 0.0)
@@ -41,11 +41,11 @@ class PidTest {
     @Test
     fun testKi() {
         val clock  = MockClock(0.0)
-        val pid = PID(
-            Kp = 0.0,
-            Ki = 2.0,
+        val pid = PIDController(
+            kp = 0.0,
+            ki = 2.0,
             setpoint = 100.0,
-            time_fn = clock::timeProvider
+            timeFn = clock::timeProvider
         )
 
         var output = pid.call(input = 50.0)
@@ -70,10 +70,10 @@ class PidTest {
     @Test
     fun testZeroAssert(){
         val clock  = MockClock(0.0)
-        val pid = PID(
-            Kp = 1.0,
-            Ki = 1.0,
-            Kd = 1.0,
+        val pid = PIDController(
+            kp = 1.0,
+            ki = 1.0,
+            kd = 1.0,
             setpoint = 0.0
         )
 
@@ -88,10 +88,10 @@ class PidTest {
     @Test
     fun testKpNegativeSetPoint(){
         val clock  = MockClock(0.0)
-        val pid = PID(
-            Kp = 1.0,
+        val pid = PIDController(
+            kp = 1.0,
             setpoint = -10.0,
-            time_fn = clock::timeProvider
+            timeFn = clock::timeProvider
         )
 
         var output = pid.call(input = 0.0)
@@ -124,12 +124,12 @@ class PidTest {
     @Test
     fun testKiNegativeSetPoint(){
         val clock  = MockClock(0.0)
-        val pid = PID(
-            Kp = 0.0,
-            Ki = 1.0,
+        val pid = PIDController(
+            kp = 0.0,
+            ki = 1.0,
             setpoint = -10.0,
             sampleTime = 0.1,
-            time_fn = clock::timeProvider
+            timeFn = clock::timeProvider
         )
 
 
@@ -156,12 +156,12 @@ class PidTest {
     @Test
     fun testKd() {
         val clock = MockClock(0.0)
-        val pid = PID(
-            Kp = 0.0,
-            Ki = 0.0,
-            Kd = 0.1,
+        val pid = PIDController(
+            kp = 0.0,
+            ki = 0.0,
+            kd = 0.1,
             setpoint = 10.0,
-            time_fn = clock::timeProvider
+            timeFn = clock::timeProvider
         )
 
         var output = pid.call(input = 0.0)
@@ -190,12 +190,12 @@ class PidTest {
     @Test
     fun testKdNegativeSetpoint() {
         val clock = MockClock(0.0)
-        val pid = PID(
-            Kp = 0.0,
-            Ki = 0.0,
-            Kd = 0.1,
+        val pid = PIDController(
+            kp = 0.0,
+            ki = 0.0,
+            kd = 0.1,
             setpoint = -10.0,
-            time_fn = clock::timeProvider
+            timeFn = clock::timeProvider
         )
 
         var output = pid.call(input = 0.0)
@@ -224,10 +224,10 @@ class PidTest {
 
     @Test
     fun testStateTarge(){
-        val pid = PID(
-            Kp = 0.0,
-            Ki = 1.0,
-            Kd = 0.1,
+        val pid = PIDController(
+            kp = 0.0,
+            ki = 1.0,
+            kd = 0.1,
             setpoint = 10.0,
         )
           var output =  pid.call(input = 10.0)
@@ -240,12 +240,12 @@ class PidTest {
     @Test
     fun testOutputLimits(){
         val clock = MockClock(0.0)
-        val pid = PID(
-            Kp = 100.0,
-            Ki = 20.0,
-            Kd = 40.0,
+        val pid = PIDController(
+            kp = 100.0,
+            ki = 20.0,
+            kd = 40.0,
             setpoint = 10.0,
-            output_limits = Pair(0.0,100.0  ),
+            outputLimits = Pair(0.0,100.0  ),
         )
         clock.advance(0.1)
         var output: Double? = pid.call(input = 0.0)
@@ -264,7 +264,7 @@ class PidTest {
 
     @Test
     fun testSampleTime(){
-        val pid = PID(setpoint = 10.0, sampleTime = 10.0)
+        val pid = PIDController(setpoint = 10.0, sampleTime = 10.0)
         var output = pid.call(input = 0.0)
         var output2 = pid.call(input = 100.0)
 
@@ -282,10 +282,10 @@ class PidTest {
             customTime += 1.0
             customTime
         }
-        val pid = PID(
-            Kp = 1.0,
+        val pid = PIDController(
+            kp = 1.0,
             setpoint = 100.0,
-            time_fn = customTimeProvider
+            timeFn = customTimeProvider
         )
 
         pid.call(input = 0.0)
@@ -302,29 +302,29 @@ class PidTest {
     @Test
     fun testCustomTimeFnDirect() {
         var i = 0.0
-        val pid = PID(time_fn = { i += 1.0; i })
+        val pid = PIDController(timeFn = { i += 1.0; i })
 
         pid.call(input = 0.0)
-        assertEquals(1.0, pid._last_time)
+        assertEquals(1.0, pid._lastTime)
 
         pid.call(input = 0.0)
-        assertEquals(2.0, pid._last_time)
+        assertEquals(2.0, pid._lastTime)
 
         pid.call(input = 0.0)
-        assertEquals(3.0, pid._last_time)
+        assertEquals(3.0, pid._lastTime)
     }
 
 
     @Test
     fun testAutoMode() {
         val clock = MockClock(0.0)
-        val pid = PID(
-            Kp = 1.0,
-            Ki = 0.0,
-            Kd = 0.0,
+        val pid = PIDController(
+            kp = 1.0,
+            ki = 0.0,
+            kd = 0.0,
             setpoint = 10.0,
             sampleTime = 0.0,
-            time_fn = clock::timeProvider
+            timeFn = clock::timeProvider
         )
 
         clock.advance(0.1)
@@ -337,7 +337,7 @@ class PidTest {
         assertNotNull(output, "Output must not be null.")
         assertEquals(5.0, output, 0.001)
 
-        pid.auto_mode = false
+        pid.autoMode = false
         val lastOutput = output
 
         clock.advance(0.1)
@@ -350,7 +350,7 @@ class PidTest {
         assertNotNull(output, "Output must not be null.")
         assertEquals(lastOutput, output)
 
-        pid.auto_mode = true
+        pid.autoMode = true
 
         clock.advance(0.1)
         output = pid.call(input = 8.0)
