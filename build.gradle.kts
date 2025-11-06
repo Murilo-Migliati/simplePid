@@ -71,6 +71,7 @@ publishing {
         maven {
             name = "CentralPortal"
             url = uri("https://central.sonatype.com/api/v1/publisher")
+
             credentials {
                 username = System.getenv("SONATYPE_USERNAME")
                 password = System.getenv("SONATYPE_TOKEN")
@@ -80,9 +81,9 @@ publishing {
 }
 
 signing {
+    val gpgKey = System.getenv("GPG_SIGNING_KEY_ARMORED")
     val gpgPassword = System.getenv("GPG_SIGNING_PASSWORD")
-    val gpgKeyArmored = System.getenv("GPG_SIGNING_KEY_ARMORED")
 
-    useInMemoryPgpKeys(gpgKeyArmored, gpgPassword)
+    useInMemoryPgpKeys(gpgKey, gpgPassword)
     sign(publishing.publications)
 }
