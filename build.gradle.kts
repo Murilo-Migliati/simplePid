@@ -43,6 +43,9 @@ kotlin {
 publishing {
     publications {
         named<MavenPublication>("kotlinMultiplatform") {
+
+            artifactId = "simplepidkmm"
+
             pom {
                 name = "Simple PID KMM"
                 description = "A lightweight, dependency-free PID controller for Kotlin Multiplatform."
@@ -77,6 +80,12 @@ publishing {
                 password = System.getenv("SONATYPE_TOKEN")
             }
         }
+    }
+}
+
+tasks.withType<PublishToMavenRepository>().configureEach {
+    onlyIf {
+        publication.name == "kotlinMultiplatform"
     }
 }
 
