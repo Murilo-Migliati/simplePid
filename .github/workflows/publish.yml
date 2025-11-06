@@ -29,4 +29,4 @@ jobs:
           SONATYPE_TOKEN: ${{ secrets.SONATYPE_TOKEN }}
           GPG_SIGNING_KEY_ARMORED: ${{ secrets.GPG_SIGNING_KEY_ARMORED }}
           GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
-        run: .\gradlew publish --scan
+        run: ./gradlew publish --scan
