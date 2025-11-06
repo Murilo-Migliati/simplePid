@@ -70,7 +70,7 @@ publishing {
     repositories {
         maven {
             name = "CentralPortal"
-            url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
+            url = uri("https://central.sonatype.com/api/v1/publisher")
             credentials {
                 username = System.getenv("SONATYPE_USERNAME")
                 password = System.getenv("SONATYPE_TOKEN")
