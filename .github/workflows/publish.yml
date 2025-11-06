@@ -7,8 +7,6 @@ on:
 
 jobs:
   publish:
-    # CORREÇÃO: Mudado de 'ubuntu-latest' para 'macos-latest'
-    # Isto é obrigatório para compilar os seus alvos KMP de iOS
     runs-on: macos-latest
     
     steps:
@@ -21,6 +19,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x gradlew
 
       - name: Publicar no Maven Central
         env:
