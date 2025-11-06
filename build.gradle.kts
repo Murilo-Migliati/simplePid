@@ -70,7 +70,7 @@ publishing {
     repositories {
         maven {
             name = "CentralPortal"
-            url = uri("https://central.sonatype.com/api/v1/publisher")
+            url = uri("https://central.sonatype.com/service/local/staging/deploy/maven2/")
 
             credentials {
                 username = System.getenv("SONATYPE_USERNAME")
