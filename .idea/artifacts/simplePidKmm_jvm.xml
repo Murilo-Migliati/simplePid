@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="simplePidKmm-jvm">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="simplePidKmm-jvm.jar">
+      <element id="module-output" name="simplePidKmm.jvmMain" />
+    </root>
+  </artifact>
+</component>
