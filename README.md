@@ -22,17 +22,26 @@ While the core logic was inspired by Lundberg’s work, this implementation was 
 
 Available on **Maven Central**:
 
-```kotlin
-dependencies {
-    implementation("io.github.murilo-migliati:simple-pid-kmm:1.0")
-}
+### Maven
+```xml
+<dependency>
+  <groupId>io.github.murilo-migliati</groupId>
+  <artifactId>simple-pid-kmm</artifactId>
+  <version>1.0</version>
+</dependency>
 ```
 
-**Gradle (Kotlin DSL):**
+### Gradle (Groovy DSL)
+```groovy
+implementation "io.github.murilo-migliati:simple-pid-kmm:1.0"
+```
 
+### Gradle (Kotlin DSL)
 ```kotlin
 implementation("io.github.murilo-migliati:simple-pid-kmm:1.0")
 ```
+
+> ✅ **Note**: Always check the latest version on [Maven Central](https://central.sonatype.com/search?q=io.github.murilo-migliati).
 
 ---
 
@@ -58,7 +67,6 @@ fun main() {
         println("PID output: $output")
         
         // Simulates humidity changing based on the output
-        // (This is just an example, your logic will be different)
         if (output != null) {
             humidity += output / 10.0 
         }
