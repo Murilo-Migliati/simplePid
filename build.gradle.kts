@@ -1,5 +1,5 @@
 group = "io.github.murilo-migliati"
-version = "1.0"
+version = "1.0.1"
 
 plugins {
     kotlin("multiplatform")
@@ -40,39 +40,7 @@ kotlin {
         }
     }
 }
-/*
-publishing {
-    publications {
-        named<MavenPublication>("kotlinMultiplatform") {
 
-            artifactId = "simplepidkmm"
-
-            pom {
-                name = "Simple PID KMM"
-                description = "A lightweight, dependency-free PID controller for Kotlin Multiplatform."
-                url = "https://github.com/Murilo-Migliati/simplePid"
-                licenses {
-                    license {
-                        name = "The MIT License"
-                        url = "https://opensource.org/licenses/MIT"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "Murilo-Migliati"
-                        name = "Murilo Migliati"
-                    }
-                }
-                scm {
-                    connection = "scm:git:github.com/Murilo-Migliati/simplePid.git"
-                    url = "https://github.com/Murilo-Migliati/simplePid"
-                }
-            }
-        }
-    }
-
-}
-*/
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()

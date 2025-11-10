@@ -19,4 +19,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "simplePidKmm"
+rootProject.name = "controllerPidKmp"
