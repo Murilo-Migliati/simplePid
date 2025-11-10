@@ -6,7 +6,7 @@ plugins {
     id("com.android.library")
     id("maven-publish")
     id("signing")
-    id("io.github.gradle-nexus.publish-plugin")
+    id("com.vanniktech.maven.publish")
 }
 
 android {
@@ -73,23 +73,31 @@ publishing {
 
 }
 
+mavenPublishing {
+    publishToMavenCentral() // Configura para o NOVO PORTAL
+    signAllPublications()   // Se integra com as variáveis de ambiente de assinatura
 
-signing {
-    val gpgKey = System.getenv("GPG_SIGNING_KEY_ARMORED")
-    val gpgPassword = System.getenv("GPG_SIGNING_PASSWORD")
+    // O plugin preenche coordenadas automaticamente, mas podemos definir o POM
+    pom {
+        name = "Simple PID KMM"
+        description = "A lightweight, dependency-free PID controller for Kotlin Multiplatform."
+        url = "https://github.com/Murilo-Migliati/simplePid"
 
-    useInMemoryPgpKeys(gpgKey, gpgPassword)
-    sign(publishing.publications)
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-
-            username.set(System.getenv("SONATYPE_USERNAME"))
-            password.set(System.getenv("SONATYPE_TOKEN"))
+        licenses {
+            license {
+                name = "The MIT License"
+                url = "https://opensource.org/licenses/MIT"
+            }
+        }
+        developers {
+            developer {
+                id = "Murilo-Migliati"
+                name = "Murilo Migliati"
+            }
+        }
+        scm {
+            connection = "scm:git:github.com/Murilo-Migliati/simplePid.git"
+            url = "https://github.com/Murilo-Migliati/simplePid"
         }
     }
 }
