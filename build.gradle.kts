@@ -40,7 +40,7 @@ kotlin {
         }
     }
 }
-
+/*
 publishing {
     publications {
         named<MavenPublication>("kotlinMultiplatform") {
@@ -72,12 +72,11 @@ publishing {
     }
 
 }
-
+*/
 mavenPublishing {
-    publishToMavenCentral() // Configura para o NOVO PORTAL
-    signAllPublications()   // Se integra com as variáveis de ambiente de assinatura
+    publishToMavenCentral()
+    signAllPublications()
 
-    // O plugin preenche coordenadas automaticamente, mas podemos definir o POM
     pom {
         name = "Simple PID KMM"
         description = "A lightweight, dependency-free PID controller for Kotlin Multiplatform."
