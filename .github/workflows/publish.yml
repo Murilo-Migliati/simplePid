@@ -32,4 +32,4 @@ jobs:
 
           GRADLE_ENTERPRISE_TERMS_OF_SERVICE_AGREED: "true"
         
-        run: ./gradlew publish --scan
+        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository --scan

@@ -6,6 +6,7 @@ plugins {
     id("com.android.library")
     id("maven-publish")
     id("signing")
+    id("io.github.gradle-nexus.publish-plugin")
 }
 
 android {
@@ -70,24 +71,8 @@ publishing {
         }
     }
 
-    repositories {
-        maven {
-            name = "CentralPortal"
-            url = uri("https://central.sonatype.com/api/v1/publisher")
-
-            credentials {
-                username = System.getenv("SONATYPE_USERNAME")
-                password = System.getenv("SONATYPE_TOKEN")
-            }
-        }
-    }
 }
 
-tasks.withType<PublishToMavenRepository>().configureEach {
-    onlyIf {
-        publication.name == "kotlinMultiplatform"
-    }
-}
 
 signing {
     val gpgKey = System.getenv("GPG_SIGNING_KEY_ARMORED")
@@ -95,4 +80,16 @@ signing {
 
     useInMemoryPgpKeys(gpgKey, gpgPassword)
     sign(publishing.publications)
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+
+            username.set(System.getenv("SONATYPE_USERNAME"))
+            password.set(System.getenv("SONATYPE_TOKEN"))
+        }
+    }
 }
