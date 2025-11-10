@@ -1,6 +1,6 @@
 # Kotlin PID Controller (KMP)
 
-A lightweight and extensible PID controller library written in **Kotlin Multiplatform (KMM)** — designed to bring precise control algorithms to Android, iOS, and desktop systems with minimal effort.
+A lightweight and extensible PID controller library written in **Kotlin Multiplatform (KMP)** — designed to bring precise control algorithms to Android, iOS, and desktop systems with minimal effort.
 
 This project is a refactored and extended version of the original **Simple PID Controller** by *Mark Lundberg*.  
 While the core logic was inspired by Lundberg’s work, this implementation was rebuilt from scratch in Kotlin, focusing on cross-platform performance, type safety, and developer experience.
