@@ -25,20 +25,20 @@ Available on **Maven Central**:
 ### Maven
 ```xml
 <dependency>
-  <groupId>io.github.murilo-migliati</groupId>
-  <artifactId>simple-pid-kmm</artifactId>
-  <version>1.0</version>
+    <groupId>io.github.murilo-migliati</groupId>
+    <artifactId>controllerPidKmp</artifactId>
+    <version>1.0.1</version>
 </dependency>
 ```
 
 ### Gradle (Groovy DSL)
 ```groovy
-implementation "io.github.murilo-migliati:simple-pid-kmm:1.0"
+implementation "io.github.murilo-migliati:controllerPidKmp:1.0.1"
 ```
 
 ### Gradle (Kotlin DSL)
 ```kotlin
-implementation("io.github.murilo-migliati:simple-pid-kmm:1.0")
+implementation("io.github.murilo-migliati:controllerPidKmp:1.0.1")
 ```
 
 > ✅ **Note**: Always check the latest version on [Maven Central](https://central.sonatype.com/search?q=io.github.murilo-migliati).
